@@ -1,5 +1,9 @@
-
-
+import os
+import re
+import io
+import numpy as np
+import spacy
+from spacy.matcher import Matcher
 
 
 
@@ -9,6 +13,7 @@
 
 
 def print_names(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     tokens = []
     for token in docx:
@@ -20,6 +25,7 @@ def print_names(text):
 
 
 def print_org(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     tokens = []
     for token in docx:
@@ -31,6 +37,7 @@ def print_org(text):
 
 
 def print_gpe(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     tokens = []
     for token in docx:
@@ -43,6 +50,7 @@ def print_gpe(text):
           
           
 def print_date(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     tokens = []
     for token in docx:
@@ -54,6 +62,7 @@ def print_date(text):
 
 
 def print_phone(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     tokens = []
     for token in docx:
@@ -66,6 +75,7 @@ def print_phone(text):
           
 # Functions to Sanitize and Redact 
 def scrub(text):
+    nlp = spacy.load("en_core_web_sm")
     docx = nlp(text)
     redacted_sentences = []
     for token in docx:
@@ -91,8 +101,9 @@ def scrub(text):
 
     
 def write_to_file(text):
+  tokens = [token.orth_ for token in text]
   f = open("myfile.redacted", "w")
-  f.write(str(text))
+  f.write(tokens)
   #print(f.read())
   f.close()
 
