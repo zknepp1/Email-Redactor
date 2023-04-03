@@ -1,4 +1,3 @@
-
 import os
 import re
 import io
@@ -165,8 +164,6 @@ matcher.add("DATE", [pattern39])
 matcher.add("DATE", [pattern40])
 
 
-with open('data4.txt', 'r') as file:
-    data4 = file.read()
 
 
 
