@@ -5,18 +5,18 @@ import io
 import numpy as np
 import spacy
 from spacy.matcher import Matcher
-from redact import scrub
-from redact import write_to_file
-from redact import in_matches
+#from redact import scrub
+#from redact import write_to_file
+#from redact import in_matches
 import en_core_web_sm
 
 
 # Functions to Sanitize and Redact 
 def scrub(text):
-    nlp = spacy.load("en_core_web_sm")
-    docx = nlp(text)
+    #nlp = spacy.load("en_core_web_sm")
+    #docx = nlp(text)
     redacted_sentences = []
-    for token in docx:
+    for token in text:
         if token.ent_type_ == 'PERSON':
             redacted_sentences.append('\u2588')
 
@@ -39,9 +39,9 @@ def scrub(text):
 
     
 def write_to_file(text):
-  tokens = [token.orth_ for token in text]
+  #tokens = [token.orth_ for token in text]
   f = open("myfile.redacted", "w")
-  f.write(tokens)
+  f.write(str(text))
   #print(f.read())
   f.close()
 
