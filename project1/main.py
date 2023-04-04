@@ -1,4 +1,4 @@
-
+import sys
 import os
 import re
 import io
@@ -12,7 +12,7 @@ import en_core_web_sm
 
 
 # Functions to Sanitize and Redact 
-def scrub(text):
+def scrub(text, matches, doc):
     #nlp = spacy.load("en_core_web_sm")
     #docx = nlp(text)
     redacted_sentences = []
@@ -29,7 +29,7 @@ def scrub(text):
         elif token.ent_type_ == 'GENDER':
             redacted_sentences.append('\u2588')
 
-        elif in_matches(token.text):
+        elif in_matches(token.text, matches, doc):
           redacted_sentences.append('\u2588')
 
         else:
@@ -46,7 +46,7 @@ def write_to_file(text):
   f.close()
 
 
-def in_matches(ent):
+def in_matches(ent, matches, doc):
   for match_id, start, end in matches:
     matched_span = doc[start:end]
     if matched_span.text == ent:
@@ -143,14 +143,23 @@ def make_matcher():
 
 
 def main():
-    with open('data4.txt', 'r') as file:
-        data4 = file.read()
-        doc = nlp(data4)
-        m = make_matcher()
-        matches = m(doc)
-        x = scrub(doc)
-        write_to_file(x)
+    args = sys.argv[1:]
+    #for i in args:
+    #    print(i)
+    file = args[1]
 
+    try:
+       with open(file, 'r') as file:
+           data4 = file.read()
+       nlp = spacy.load("en_core_web_sm")
+       doc = nlp(data4)
+       m = make_matcher()
+       matches = m(doc)
+       x = scrub(doc, matches, doc)
+       write_to_file(x)
+       print("File has been successfully redacted")
+    except:
+       print("Could not process file")
 
 if __name__ == "__main__":
     main()
