@@ -59,58 +59,14 @@ def in_matches(ent):
 def make_matcher():
     nlp = spacy.load("en_core_web_sm")
     matcher = Matcher(nlp.vocab)
-    pattern1 = [
-              {"TEXT": "("},
-              {"IS_DIGIT": True},
-              {"TEXT": ")"},
-              {"IS_SPACE": True},
-              {"IS_DIGIT": True},
-              {"TEXT": "-"},
-              {"IS_DIGIT": True}
-               ]
-
-    pattern2 = [
-              {"IS_DIGIT": True},
-              {"TEXT": "-"},
-              {"IS_DIGIT": True}
-               ]
-    
-
-    pattern3 = [
-              {"ENT_TYPE": 'PERSON'},
-              {"ENT_TYPE": 'PERSON'}
-               ]
-
-    pattern4 = [
-              {"LIKE_EMAIL": True}
-               ]
-
-    pattern5 = [
-              {"ENT_TYPE": 'PERSON'},
-              {"TEXT": ','},
-              {"ENT_TYPE": 'PERSON'}
-               ]
-
-    pattern6 = [
-              {"TEXT": "He"}
-               ]
-
-    pattern7 = [
-                  {"IS_DIGIT": True},
-                  {"TEXT": "-"},
-                  {"IS_DIGIT": True},
-                  {"TEXT": "-"},
-                  {"IS_DIGIT": True}
-               ]
-
-    pattern8 = [
-              {"IS_ALPHA": True},
-              {"IS_SPACE": True},
-              {"IS_DIGIT": True},
-              {"TEXT": ","},
-              {"IS_SPACE": True},
-              {"IS_DIGIT": True} ]
-
+    pattern1 = [{"TEXT": "("},{"IS_DIGIT": True}, {"TEXT": ")"},{"IS_SPACE": True},{"IS_DIGIT": True}, {"TEXT": "-"}, {"IS_DIGIT": True}]
+    pattern2 = [ {"IS_DIGIT": True}, {"TEXT": "-"}, {"IS_DIGIT": True}]
+    pattern3 = [ {"ENT_TYPE": 'PERSON'}, {"ENT_TYPE": 'PERSON'} ]
+    pattern4 = [ {"LIKE_EMAIL": True}]
+    pattern5 = [ {"ENT_TYPE": 'PERSON'},{"TEXT": ','}, {"ENT_TYPE": 'PERSON'}]
+    pattern6 = [ {"TEXT": "He"} ]
+    pattern7 = [ {"IS_DIGIT": True},{"TEXT": "-"}, {"IS_DIGIT": True}, {"TEXT": "-"}, {"IS_DIGIT": True} ]
+    pattern8 = [ {"IS_ALPHA": True}, {"IS_SPACE": True}, {"IS_DIGIT": True}, {"TEXT": ","}, {"IS_SPACE": True}, {"IS_DIGIT": True} ]
     pattern9 = [{'TEXT': {'REGEX' : r'(\(\d\d\d\) \d\d\d-\d+)'}}]
     pattern10 = [{'TEXT': {'REGEX' : r'\d\d\d'}}]
     pattern11 = [{'TEXT': {'REGEX' : r'\d\d\d\d)'}}]
@@ -186,23 +142,18 @@ def make_matcher():
 
 
 
+def main():
+    with open('data4.txt', 'r') as file:
+        data4 = file.read()
+        doc = nlp(data4)
+        m = make_matcher()
+        matches = m(doc)
+        x = scrub(doc)
+        write_to_file(x)
 
 
-
-with open('data4.txt', 'r') as file:
-    data4 = file.read()
-
-
-
-doc = nlp(data4)
-
-matches = matcher(doc)
-
-
-
-x = scrub(doc)
-
-write_to_file(x)
+if __name__ == "__main__":
+    main()
 
 
 
