@@ -15,35 +15,45 @@ import en_core_web_sm
 def scrub(text, matches, doc):
     #nlp = spacy.load("en_core_web_sm")
     #docx = nlp(text)
+    redact_count = 0
     redacted_sentences = []
     for token in text:
         if token.ent_type_ == 'PERSON':
             redacted_sentences.append('\u2588')
+            redact_count = redact_count + 1
 
         elif token.ent_type_ == 'DATE':
             redacted_sentences.append('\u2588')
+            redact_count = redact_count + 1
 
         elif token.ent_type_ == 'PHONE':
             redacted_sentences.append('\u2588')
+            redact_count = redact_count + 1
 
         elif token.ent_type_ == 'GENDER':
             redacted_sentences.append('\u2588')
+            redact_count = redact_count + 1
 
         elif in_matches(token.text, matches, doc):
-          redacted_sentences.append('\u2588')
+            redacted_sentences.append('\u2588')
+            redact_count = redact_count + 1
 
         else:
             redacted_sentences.append(token.text)
 
-    return " ".join(redacted_sentences)
+    return " ".join(redacted_sentences), redact_count
 
     
-def write_to_file(text):
-  #tokens = [token.orth_ for token in text]
-  f = open("myfile.redacted", "w")
-  f.write(str(text))
-  #print(f.read())
-  f.close()
+def write_to_file(text, path):
+   #tokens = [token.orth_ for token in text]
+   f = open(path + "myfile.redacted", "w")
+   try:
+      f.write(str(text))
+      print("wrote file to: ", path)
+   except:
+      print("Unable to write file")
+   #print(f.read())
+   f.close()
 
 
 def in_matches(ent, matches, doc):
@@ -74,18 +84,18 @@ def make_matcher():
     pattern13 = [{"LOWER": "she"}]
     pattern14 = [{"LOWER": "his"}]
     pattern15 = [{"LOWER": "hers"}]
-    pattern16 = [{"TEXT": "january"}]
-    pattern17 = [{"TEXT": "february"}]
-    pattern18 = [{"TEXT": "march"}]
-    pattern19 = [{"TEXT": "april"}]
-    pattern20 = [{"TEXT": "may"}]
-    pattern21 = [{"TEXT": "june"}]
-    pattern22 = [{"TEXT": "july"}]
-    pattern23 = [{"TEXT": "august"}]
-    pattern24 = [{"TEXT": "september"}]
-    pattern25 = [{"TEXT": "october"}]
-    pattern26 = [{"TEXT": "november"}]
-    pattern27 = [{"TEXT": "december"}]
+    pattern16 = [{"LOWER": "january"}]
+    pattern17 = [{"LOWER": "february"}]
+    pattern18 = [{"LOWER": "march"}]
+    pattern19 = [{"LOWER": "april"}]
+    pattern20 = [{"LOWER": "may"}]
+    pattern21 = [{"LOWER": "june"}]
+    pattern22 = [{"LOWER": "july"}]
+    pattern23 = [{"LOWER": "august"}]
+    pattern24 = [{"LOWER": "september"}]
+    pattern25 = [{"LOWER": "october"}]
+    pattern26 = [{"LOWER": "november"}]
+    pattern27 = [{"LOWER": "december"}]
     pattern28 = [{"LOWER": "jan"}]
     pattern29 = [{"LOWER": "feb"}]
     pattern30 = [{"LOWER": "mar"}]
@@ -98,7 +108,7 @@ def make_matcher():
     pattern37 = [{"LOWER": "oct"}]
     pattern38 = [{"LOWER": "nov"}]
     pattern39 = [{"LOWER": "dec"}]
-    pattern40 = [{"IS_DIGIT": True},  {"TEXT": "-"}, {"IS_DIGIT": True}, {"TEXT": "-"}, {"IS_DIGIT": True},{"TEXT": "."}]
+    pattern40 = [{"IS_DIGIT": True}]
     matcher.add("PHONE", [pattern1])
     matcher.add("PHONE", [pattern2])
     matcher.add("PERSON", [pattern3])
@@ -147,7 +157,7 @@ def main():
     #for i in args:
     #    print(i)
     file = args[1]
-
+    path = args[8]
     try:
        with open(file, 'r') as file:
            data4 = file.read()
@@ -155,9 +165,11 @@ def main():
        doc = nlp(data4)
        m = make_matcher()
        matches = m(doc)
-       x = scrub(doc, matches, doc)
-       write_to_file(x)
+       x, count = scrub(doc, matches, doc)
+       write_to_file(x, path)
        print("File has been successfully redacted")
+       if args[10] == "stderr":
+           print("The redactor as redacted: ", count, " items" )
     except:
        print("Could not process file")
 
