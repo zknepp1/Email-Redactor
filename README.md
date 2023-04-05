@@ -2,9 +2,11 @@
 NAME: ZACHARY KNEPP
 
 # HOW TO INSTALL
-pipenv install project1
+git clone https://github.com/zknepp1/cs5293sp23-project1.git
 
 # HOW TO RUN
+cd cs5293sp23-project1
+pipenv run python redactor.py --input data4.txt --names --dates --phones --genders --address --output test/ --stats stderr
 
 # FUNCTIONS
 SCRUB() - THE SCRUB FUNCTION TAKES THE DOCUMENT AND MATCHES FOUND IN THE DOCUMENT AS ARGUMENTS, THEN LOOPS THROUGH THE DOCUMENT REPLACING MATCHES WITH A FULL BLOCK. FINALLY RETURNS 2 ARGUMENTS, THE REDACTED SENTENCES AND THE COUNT OF REDACTED OBJECTS.
