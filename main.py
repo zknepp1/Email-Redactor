@@ -5,17 +5,14 @@ import io
 import numpy as np
 import spacy
 from spacy.matcher import Matcher
-#from redact import scrub
-#from redact import write_to_file
-#from redact import in_matches
 import en_core_web_sm
 
 
-# Functions to Sanitize and Redact 
+# FUNCTION THAT REDACTS UNWANTED INFORMATION
 def scrub(text, matches, doc):
-    #nlp = spacy.load("en_core_web_sm")
-    #docx = nlp(text)
+    #COUNT TO KEEP TRACK OF HOW MANY ITEMS REDACTED
     redact_count = 0
+    #LIST TO KEEP REDACTED DATA
     redacted_sentences = []
     for token in text:
         if token.ent_type_ == 'PERSON':
@@ -44,18 +41,18 @@ def scrub(text, matches, doc):
     return " ".join(redacted_sentences), redact_count
 
     
+# FUNCTION THAT WRITES DOCUMENT TO A .REDACTED FILE
 def write_to_file(text, path):
-   #tokens = [token.orth_ for token in text]
    f = open(path + "myfile.redacted", "w")
    try:
       f.write(str(text))
       print("wrote file to: ", path)
    except:
       print("Unable to write file")
-   #print(f.read())
    f.close()
 
 
+# FUNCTION TO CHECK IF ENTITY IS IN MATCHES. RETURNS TRUE IF ENTITY IS IN MATCHES
 def in_matches(ent, matches, doc):
   for match_id, start, end in matches:
     matched_span = doc[start:end]
@@ -65,7 +62,7 @@ def in_matches(ent, matches, doc):
 
 
 
-
+# CREATES THE MATCHER OBJECT AND ADDS PATTERNS. RETURNS MATCHER OBJECT
 def make_matcher():
     nlp = spacy.load("en_core_web_sm")
     matcher = Matcher(nlp.vocab)
@@ -159,17 +156,17 @@ def main():
     file = args[1]
     path = args[8]
     try:
-       with open(file, 'r') as file:
+       with open(file, 'r') as file:        # OPENS FILE
            data4 = file.read()
-       nlp = spacy.load("en_core_web_sm")
-       doc = nlp(data4)
-       m = make_matcher()
-       matches = m(doc)
-       x, count = scrub(doc, matches, doc)
-       write_to_file(x, path)
+       nlp = spacy.load("en_core_web_sm")   #LOADS SPACEY MODEL
+       doc = nlp(data4) 
+       m = make_matcher()                   # MAKE MATCHER
+       matches = m(doc)                     # FIND MATCHES
+       x, count = scrub(doc, matches, doc)  # SCRUB DOCUMENT
+       write_to_file(x, path)               # WRITE DOCUMENT TO FILE
        print("File has been successfully redacted")
        if args[10] == "stderr":
-           print("The redactor as redacted: ", count, " items" )
+           print("The redactor as redacted: ", count, " items" ) #PRINTS STATS
     except:
        print("Could not process file")
 
